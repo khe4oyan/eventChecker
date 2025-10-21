@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Listener Tester</title>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+      padding: 16px;
+      background: #222;
+      margin: 0;
+      border-bottom: 1px solid #333;
+    }
+    #eventBox {
+      height: 200px;
+      margin: 16px;
+      border: 2px dashed #555;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #999;
+      user-select: none;
+      background: #1a1a1a;
+      touch-action: none;
+    }
+    #log {
+      height: 60vh;
+      overflow-y: auto;
+      padding: 10px;
+      background: #000;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .log-item {
+      padding: 4px 8px;
+      border-bottom: 1px solid #222;
+    }
+    .log-item span {
+      color: #0f0;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 JS Event Listener Tester</h1>
+  <div id="eventBox">Жми, двигай, ори, вводи, ориентацию крути 📱</div>
+  <div id="log"></div>
+
+  <script>
+    const box = document.getElementById("eventBox");
+    const log = document.getElementById("log");
+
+    function showEvent(name) {
+      const el = document.createElement("div");
+      el.className = "log-item";
+      const time = new Date().toLocaleTimeString();
+      el.innerHTML = `<span>${name}</span> — ${time}`;
+      log.prepend(el);
+      if (log.children.length > 200) log.removeChild(log.lastChild);
+
+      box.style.background = "#333";
+      box.innerText = name;
+      clearTimeout(box._reset);
+      box._reset = setTimeout(() => {
+        box.style.background = "#1a1a1a";
+        box.innerText = "Жми, двигай, ори, вводи, ориентацию крути 📱";
+      }, 1000);
+    }
+
+    // === ВСЕ СОБЫТИЯ ===
+    const allEvents = [
+      // Мышь
+      "click","dblclick","mousedown","mouseup","mousemove","mouseenter","mouseleave","mouseover","mouseout","contextmenu","wheel","auxclick",
+      // Touch
+      "touchstart","touchmove","touchend","touchcancel",
+      // Pointer
+      "pointerdown","pointermove","pointerup","pointercancel","pointerover","pointerout","pointerenter","pointerleave","gotpointercapture","lostpointercapture",
+      // Клавиатура
+      "keydown","keypress","keyup",
+      // Формы
+      "input","change","focus","blur","focusin","focusout","submit","reset","invalid",
+      // Окно и документ
+      "load","DOMContentLoaded","beforeunload","unload","resize","scroll","hashchange","popstate","error","online","offline","pagehide","pageshow","visibilitychange",
+      // Clipboard
+      "copy","cut","paste",
+      // Медиа
+      "play","pause","playing","waiting","seeking","seeked","ended","timeupdate","volumechange","ratechange","loadeddata","loadedmetadata","canplay","canplaythrough","durationchange","stalled","suspend","abort","emptied",
+      // Drag & Drop
+      "drag","dragstart","dragend","dragenter","dragover","dragleave","drop",
+      // Details/Dialog
+      "toggle","close","cancel",
+      // Storage & App
+      "storage","beforeinstallprompt","appinstalled",
+      // Ориентация и сенсоры
+      "deviceorientation","deviceorientationabsolute","devicemotion","orientationchange",
+      // CSS
+      "animationstart","animationend","animationiteration","transitionstart","transitionend","transitioncancel",
+    ];
+
+    // === Подписываемся на всё ===
+    allEvents.forEach(evt => {
+      try {
+        window.addEventListener(evt, e => showEvent(evt), { passive: true });
+        box.addEventListener(evt, e => showEvent(evt), { passive: true });
+      } catch (err) {
+        console.warn("Cannot listen:", evt);
+      }
+    });
+  </script>
+</body>
+</html>
